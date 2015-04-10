@@ -25,7 +25,7 @@ HOUR:1    --> 表示控制1个小时输出一个label标签
 
 rrdtool.graph( "Flow.png", "--start", "-1d","--vertical-label=Bytes/s","--x-grid","MINUTE:12:HOUR:1:HOUR:1:0:%H",\
  "--width","650","--height","230","--title",title,
- "DEF:inoctets=Flow.rrd:eth0_in:AVERAGE",
+ "DEF:inoctets=Flow.rrd:eth0_in:AVERAGE", # 指定网卡入流量数据源DS及CF
  "DEF:outoctets=Flow.rrd:eth0_out:AVERAGE",
  "CDEF:total=inoctets,outoctets,+",
  "LINE1:total#FF8833:Total traffic",
