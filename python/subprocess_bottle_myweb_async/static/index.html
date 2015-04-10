@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta http-equiv="Cotnent-Type" content="text/html; charset=utf-8" />
+        <title>Server Operation Helper</title>
+        <style type="text/css" media="screen">
+            /* body{ background:#000;color:#fff;font-size:.9em; } */
+            #main { background:#000;color:#fff;font-size:.9em; }
+            .msg{ background:#aaa;padding:.2em; border-bottom:1px #000 solid}
+            .old{ background-color:#246499;}
+            .new{ background-color:#3B9957;}
+            .error{ background-color:#992E36;}
+        </style>
+        <script src="http://192.168.0.77/jquery-1.8.2.min.js" charset="utf-8"></script> 
+        <script src="jquery.gracefulWebSocket.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
+            function addmsg(type, msg){
+                /*  Simple helper to add a div.
+                    type is the name of a CSS class (old/new/error).
+                    msg is the contents of the div  */
+                /* $("#backinfo").empty();*/
+                $("#backinfo").append(
+                    "<div class='msg " + type + "' style='height:30%'>" + msg + "</div>"
+                );
+            }
+            function waitformsg() {
+                $("#backinfo").empty();
+               /*   This requests the url "/manipulate"
+                    When it complete (or errors)    */
+                var manipulate = $("input[name='manipulate']:checked").val();
+                var ip = $("input[name='ip']").val();
+                /* alert (manipulate + ip);*/
+                $.ajax({
+                    type:"POST",
+                    url:"/manipulate",
+                    data:"manipulate=" + manipulate + "&ip=" + ip,
+                    dataType:"text",
+                    /* If set to non-async, browser shows page as "Loading.."*/
+                    async:true,
+                    cache:false,
+                    /* Timeout in ms */
+                    timeout:50000,
+                    /* called when request to msgsrv.php completes */
+                    success:function(data){
+                        /* Add response to a .msg div (with the "new" class) */
+                        addmsg("new", data);
+                        
+                        //setTimeout(
+                            /* Request next message */
+                            //waitformsg,
+                            /* ..after 1 seconds */
+                            //1000
+                        //);
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        addmsg("error", textStatus + " (" + errorThrown + ")");
+                        //setTimeout(
+                            /* Try again after.. */
+                            //waitformsg,
+                            /* milliseconds (15seconds) */
+                            //15000
+                        //);
+                    }
+                });
+            }
+            function waitformsg_websocket() {
+                $("#backinfo").empty();
+                var operation = $("input[name='operation']:checked").val();
+                var ips = $("input[name='ips']").val();
+                /* alert(operation + "#" + ips); */
+                var ws = $.gracefulWebSocket("ws://192.168.0.77:8080/operation");
+                /* var ws = new WebSocket("ws://192.168.0.77:8080/operation");*/
+                ws.onopen = function() {
+                    ws.send(operation + "&" + ips);
+                }
+                ws.onmessage = function (evt) {
+                    var messageFromServer = evt.data;   
+                    addmsg("old", messageFromServer);
+                };
+                /* addmsg("msg","all finished!" ); */
+            }
+            $(document).ready(function(){
+                 /* Start the inital request */
+                $("input[name=single]").bind("click",waitformsg);               
+                $("input[name=multi]").bind("click",waitformsg_websocket);               
+            });
+        </script>
+    </head>
+    <body>
+        <div id="main" style="padding:0 auto 0 auto;margin:0 auto 0 auto;width:880px">
+            <h1 style="text-align:center">Server Operation Helper</h1>
+            <hr style="height:3px;border:none;border-top:3px groove skyblue;"/>
+            
+            <!-- left column  begin-->
+            <div style="width:400px;float:left">
+                <h3 style="text-align:center">单机操作</h3>
+                <form action="/manipulate" method="post" style="padding:0 30%">
+                <br />
+    
+                <input  type="radio" name="manipulate" value="uptime" />机器现时负载
+                <br />
+                <input  type="radio" name="manipulate" value="opened_port" />开放端口
+                <br />
+                <input  type="radio" name="manipulate" value="conn_counts" />连接数
+                <br />
+                <input  type="radio" name="manipulate" value="nginx_restart" />重启nginx
+                <br />
+                <input  type="radio" name="manipulate" value="server_restart" />重启服务器
+                <br />
+                输入目标IP<input class="input" type="text" name="ip" />
+                <br />
+                <input type="button" name="single" value="Single"/>
+                </form>
+            </div>
+            <!-- left colum end -->
+            
+           
+            <!-- right column begin -->
+            <div style=" width:400px;float:right">
+            <form style="padding:0 20%" action="/websocket">
+            <h3 style="text-align:center">批量操作</h3>
+            <br />
+            <input type="radio" name="operation" value="bat_bt_service_proxy" />bt_service_proxy
+            <br />
+            <input type="radio" name="operation" value="bat_bt_wd_service" />bt_wd_service            
+            <br />
+            <input type="radio" name="operation" value="bat_bt_uinfo_service" />bt_uinfo_service
+            <br />
+            <input type="radio" name="operation" value="bat_bt_chinfo_service" />bt_chinfo_service
+            <br />
+            输入脚本所在IP<input type="text" name="ips" />
+            <br />
+            <input type="button" name="multi" value="Multi"/>
+            </div>
+            <!-- right column end -->
+
+            <div style="clear:both">
+            </div>
+
+            <div id="backinfo" style="width:100%;text-align:center" >
+
+            </div>
+            <hr style="height:2px;border:none;border-top:1px groove;"/>
+            <div id="footer" style="text-align:center" />
+            <p>
+                Develope By Fengzhichao<br/>
+                CopyRight@2012<br/>
+                Email:fengzhichao@chinaduo.com<br/>
+            </p>
+            <br />
+            </div>
+        </div>
+    </body>
+
+</html>

@@ -1,0 +1,145 @@
+>>>>>>>>> re 一些常用函数
+
+①complie(pattern[,flags])                根据包含正则表达式的字符串创建模式对象
+②search(pattern,string[,flags])          在字符串中寻找第一个匹配模式的子字符串
+③match(pattern,string[,flags])           在字符串的开始处匹配模式
+④split(pattern,string[,maxsplit=0])      根据模式的匹配项来分割字符串
+⑤findall(pattern,string)                 列出字符串中所有 pattern 的匹配项
+⑥sub(pattern,repl,string[,count=0])      把字符串中所有符合 pattern 的匹配项用 repl 替代
+⑦escape(string)                          将字符串中所有特殊的正则表达式字符转义
+⑧finditer(pattern,string)                列出字符串中所有 pattern 的匹配项迭代器
+
+>>>>>> ①complie(pattern[,flags])                根据包含正则表达式的字符串创建模式对象
+regex = re.compile(r'\s+han(ds)ome\s+') 
+
+>>>>>> ②search(pattern,string[,flags])          在字符串中寻找第一个匹配模式的子字符串
+>>> text = "JGood is a handsome boy, he is cool, clever, and so on..." 
+# 搜索子字符串
+>>> regex = re.compile(r'\s+han(ds)ome\s+') 
+>>> m = regex.search(text)
+>>> if m:
+...     print m.group(0),m.group(1)
+... else:
+...     print 'not search'
+... 
+ handsome  ds
+# span(group[]) start(group[]) end(group[]) 表示匹配到组在字符串里面的位置
+>>> m.span(1)
+(14, 16)
+>>> m.span(0)
+(10, 20)
+
+>>>>>> ③match(pattern,string[,flags])           在字符串的开始处匹配模式
+>>> text = "JGood is a handsome boy, he is cool, clever, and so on..." 
+# 从头开始匹配
+>>> regex = re.compile(r'\jgood\s+(is)\s+',re.IGNORECASE)
+>>> m = regex.match(text)
+>>> print m.group(0)
+JGood is 
+>>> print m.group(1)
+is
+
+>>>>>> ④split(pattern,string[,maxsplit=0])      根据模式的匹配项来分割字符串
+>>> text = "JGood is a handsome boy, he is cool, clever, and so on..." 
+# 按照空格分割
+>>> re.split(r'\s',text)
+['JGood', 'is', 'a', 'handsome', 'boy,', 'he', 'is', 'cool,', 'clever,', 'and', 'so', 'on...']
+
+ 
+
+>>>>>> ⑤findall(pattern,string)                 列出字符串中所有 pattern 的匹配项
+>>> text = "JGood is a handsome boy, he is cool, clever, and so on..." 
+# 查找包含oo的所有单词
+>>> regex = re.compile(r'\w*oo\w*')  
+>>> print regex.findall(text)
+['JGood', 'cool']
+# 把包含oo的所有单词外面都加上'[ ]'符号                                                                       
+>>> print regex.sub(r'[\1]', text)                                              
+[JGood] is a handsome boy, he is [cool], clever, and so on...
+
+
+>>>>>> ⑥sub(pattern,repl,string[,count=0])      把字符串中所有符合 pattern 的匹配项用 repl 替代
+>>> text = "JGood is a handsome boy, he is cool, clever, and so on..." 
+# 使用 UGLY 替换 handsome
+>>> re.sub(r'handsome','UGLY',text)
+'JGood is a UGLY boy, he is cool, clever, and so on...'
+# repl 可以是函数。要注意的就是，这个函数是有一个参数的，类型是matchobject，就是整个匹配的信息
+# 匹配一个'a'，返回'one_a',否则返回两个'a'
+>>> regex = re.compile(r'a{1,2}')
+>>> def myrepl(matchobj):
+...     if matchobj.group(0) == 'a':
+...             return 'one_a'
+...     else:
+...             return 'two_a'
+... 
+>>> regex.sub(myrepl,'a aa aaa aaba abaa')
+'one_a two_a two_aone_a two_abone_a one_abtwo_a'
+# python.org 的 一个例子
+# 如果匹配一个'-'则返回空格，否则返回一个'-'
+>>> def dashrepl(matchobj):       
+...     if matchobj.group(0)=='-':
+...             return ' '
+...     else:
+...             return '-'
+... 
+>>> re.sub('-{1,2}',dashrepl,'pro----gram-files')
+'pro--gram files'
+>>> re.sub(r'-{1,4}',dashrepl,'pro----gram-files')
+'pro-gram files'
+>>> re.sub('-{1,2}',dashrepl,'pro-gram-files')    
+'pro gram files'
+# 如果第二个参数是函数名或者lamda表达式，表示用这个函数的返回值，来替换匹配的内容
+>>> re.sub('a', lambda m: '(' + str(m.start()) + ',' + str(m.end()) + ')', 'babbbbab')                  
+'b(1,2)bbbb(6,7)b'
+>>> re.sub('a', lambda m: 'b', 'babbbbab')                                             
+'bbbbbbbb'
+# repl 甚至可以是个类
+# 下面的类统计了替换了次数
+>>> class Foo:
+...     def __init__(self):
+...             self.n = 0
+...             pass
+...     def __call__(self,n):
+...             self.n += 1
+...             return str(self.n)
+...     pass
+...
+>>> re.sub('a',Foo(),'abcdawda')
+'1bcd2wd3'
+>>> re.sub('a',Foo(),'aaab')    
+'123b'
+
+>>>>>> ⑦escape(string)                          将字符串中所有特殊的正则表达式字符转义
+# 可以转义特殊字符，可以用于用于raw_input的处理
+>>> re.escape(r'www.python.org')
+'www\\.python\\.org'
+
+>>>>>> ⑧finditer(pattern,string)                 列出字符串中所有 pattern 的匹配项迭代器
+# findall() 在它返回结果时不得不创建一个列表, 也可以用 finditer() 方法，不比一次读入内存
+>>> miter = re.finditer('-{1,2}','pro----gram-files')
+>>> miter
+<callable-iterator object at 0xb7cc078c>
+# 检查这个对象
+>>> miter = re.finditer('-{1,2}','pro----gram-files')
+>>> for m in miter: print dir(m)
+... 
+['__copy__', '__deepcopy__', 'end', 'expand', 'group', 'groupdict', 'groups', 'span', 'start']
+['__copy__', '__deepcopy__', 'end', 'expand', 'group', 'groupdict', 'groups', 'span', 'start']
+['__copy__', '__deepcopy__', 'end', 'expand', 'group', 'groupdict', 'groups', 'span', 'start']
+# 访问这些方法
+>>> miter = re.finditer('-{1,2}','pro----gram-files')
+>>> for m in miter:                                  
+...     print m.group()                              
+... 
+--
+--
+-
+>>> miter = re.finditer('-{1,2}','pro----gram-files')
+>>> for m in miter:
+...     print m.span()
+... 
+(3, 5)
+(5, 7)
+(11, 12)
+
+

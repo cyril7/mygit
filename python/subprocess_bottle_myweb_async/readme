@@ -1,0 +1,2 @@
+(env_bottle_dir)[root@www subprocess_bottle_myweb_async]# 
+gunicorn -k "geventwebsocket.gunicorn.workers.GeventWebSocketWorker" -w 1 -D -b 0.0.0.0:8080 web_control_my:app   

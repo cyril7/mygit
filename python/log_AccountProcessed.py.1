@@ -1,0 +1,11 @@
+#!/usr/bin/python
+target_dir = '/home/coremail/logs'
+file_prefix = 'rmi_api.log'
+import os
+
+for root, dirs, files in os.walk(target_dir):
+    print root
+    for dir in dirs:
+        print '[D] ', dir
+    for file in files:
+        print '[F ] ', file

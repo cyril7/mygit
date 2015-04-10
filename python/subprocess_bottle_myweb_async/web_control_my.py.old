@@ -1,0 +1,32 @@
+# -*- coding: utf-8 -*-
+# import subprocess
+import command
+from bottle import route, run, request, response, static_file
+
+@route("/")
+def index():
+    return static_file('index.html', root='./static')
+
+@route('/<filepath:path>')
+def static(filepath):
+    return static_file(filepath, root='./static')
+
+#@post('/manipulate/') # or @route('/login', method='POST')
+@route('/manipulate', method='GET')
+def manipulate():
+    if request.GET.get('manipulate','').strip() and request.GET.get('ip','').strip():
+        cmd = 'shutdown -h now'
+        ip = request.GET.get('ip')
+        out = command.remote(ip, cmd, capture = True, timeout = 10)
+        return '<pre>%s</pre><br/><pre>%s</pre><pre>%s</pre>' % (out.stdout, out.succeeded, out.return_code)
+        # return '<pre>%s</pre>' % out.stdout
+'''
+@route('/test')
+def run_test():
+    out_local = command.local('uname -a', capture = True)
+    out_remote = command.remote('192.168.1.78', 'uname -r', capture = True, timeout = 10)
+    return '<pre>%s</pre><br/><pre>%s</pre>' % (out_local.stdout, out_remote.stdout)
+    #return '<pre>%s</pre>'%subprocess.Popen(["ps"],stdout=subprocess.PIPE).communicate()[0]
+'''
+if __name__ == '__main__':
+    run(host='0.0.0.0', port=8080, reloader=True, debug=True)

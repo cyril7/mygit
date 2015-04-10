@@ -1,0 +1,21 @@
+filecmp模块中定义了一个dircmp类，用于比较文件夹，通过该类比较两个文件夹，可以获取一些详细的比较结果（如只在A文件夹存在的文件列表），并支持子文件夹的递归比较。 
+
+dircmp提供了三个方法用于报告比较的结果： 
+
+report()：只比较指定文件夹中的内容（文件与文件夹） 
+report_partial_closure()：比较文件夹及第一级子文件夹的内容 
+report_full_closure()：递归比较所有的文件夹的内容 
+dircmp还提供了下面这些属性用于获取比较的详细结果： 
+
+left_list：左边文件夹中的文件与文件夹列表； 
+right_list：右边文件夹中的文件与文件夹列表； 
+common：两边文件夹中都存在的文件或文件夹； 
+left_only：只在左边文件夹中存在的文件或文件夹； 
+right_only：只在右边文件夹中存在的文件或文件夹； 
+common_dirs：两边文件夹都存在的子文件夹； 
+common_files：两边文件夹都存在的子文件； 
+common_funny：两边文件夹都存在的子文件夹； 
+same_files：匹配的文件； 
+diff_files：不匹配的文件； 
+funny_files：两边文件夹中都存在，但无法比较的文件； 
+subdirs：我没看明白这个属性的意思，python手册中的解释如下：A dictionary mapping names in common_dirs to dircmp objects 

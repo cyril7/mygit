@@ -1,0 +1,63 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Emergency Server Helper</title>
+        <style type="text/css" media="screen">
+            /* body{ background:#000;color:#fff;font-size:.9em; } */
+            #main { background:#000;color:#fff;font-size:.9em; }
+            .msg{ background:#aaa;padding:.2em; border-bottom:1px #000 solid}
+            .old{ background-color:#246499;}
+            .new{ background-color:#3B9957;}
+            .error{ background-color:#992E36;}
+        </style>
+        <script src="http://192.168.0.77/twitter-bootstrap-doc/docs/assets/js/jquery.js"></script>
+        <script type="text/javascript" charset="utf-8">
+            function addmsg(type, msg){
+                /*  Simple helper to add a div.
+                    type is the name of a CSS class (old/new/error).
+                    msg is the contents of the div  */
+                $("#backinfo").append(
+                    "<div class='msg " + type + "'>" + msg + "</div>"
+                );
+            } 
+        </script>
+    </head>
+    <body>
+        <div id="main" style="padding:0 auto 0 auto;margin:0 auto 0 auto;width:800px">
+        <center>
+            <h1>Emergency Server Helper</h1>
+            <hr style="height:3px;border:none;border-top:3px groove skyblue;"/>
+            
+            <form action="/manipulate" method="get">选择您所要的操作并输入IP
+            <br />
+    
+            <div style="text-align:left;padding:0 40%">
+            <input type="radio" name="manipulate" value="uptime" />机器运行时间
+            <br />
+            <input type="radio" name="manipulate" value="opened_port" />开放端口
+            <br />
+            <input type="radio" name="manipulate" value="conn_counts" />连接数
+            <br />
+            <input type="radio" name="manipulate" value="nginx_restart" />重启nginx
+            <br />
+            <input type="radio" name="manipulate" value="server_restart" />重启服务器
+            <br />
+            输入IP<input type="text" name="ip" />
+            <br />
+            </div>
+            <input type="submit" name="submit" value="submit"/>
+            </form>
+
+            <div id="backinfo">
+                
+            <div>
+            <hr style="height:2px;border:none;border-top:1px groove;"/>
+            <p>
+                Develope By Fengzhichao<br/>
+                CopyRight@2012<br/>
+                Email:fengzhichao@chinaduo.com<br/>
+            </p>
+        </center>
+        </div>
+    </body>
+
+</html>

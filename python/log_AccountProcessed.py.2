@@ -1,0 +1,58 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+import re
+import time
+
+def get_file_list(arg_target_dir, arg_file_prefix, arg_file_list):
+    for root, dirs, files in os.walk(arg_target_dir):
+        for file in files:
+            if arg_file_prefix in file:
+                #print '[F ] ', file
+                arg_file_list.append(root + '/' + file)
+    return sorted(arg_file_list)
+
+#>>> time.mktime(time.strptime("2013-03-19 17:34:56.715", "%Y-%m-%d %H:%M:%S.%f"))
+#1363685696.0
+def time_transform(time_form):
+    return time.mktime(time.strptime(time_form, "%Y-%m-%d %H:%M:%S.%f"))
+
+
+if __name__ == "__main__":
+    #target_dir = '/home/coremail/logs'
+    target_dir = '/home/zcfeng/rmi_api_process'
+    # dot '.' is need for ignore 'rmi_api.log'
+    file_prefix = 'rmi_api.log.'
+    file_list = []
+
+    file_list = get_file_list(target_dir, file_prefix, file_list)
+
+    regex = re.compile(r'.* startTime=(?P<startTime>[0-9:\-. ]+), endTime=(?P<endTime>[0-9:\-. ]+), messageCount.*receivedMessageCount=(?P<receivedMessageCount>\d+), receivedMessageSize=(?P<receivedMessageSize>\d+), skippedMes', re.IGNORECASE)
+    for file in file_list:
+        with open(file) as f:
+            total_time_span = 0
+            total_receivedMessageCount = 0
+            total_receivedMessageSize = 0
+            for line in f:
+                if 'AccountProcessed' in line:
+                    line = line.rstrip()
+                    print line
+                    m = regex.match(line)
+                    if m:
+                        #print m.groupdict()
+                        total_time_span += time_transform(m.groupdict()['endTime']) - time_transform(m.groupdict()['startTime'])
+                        total_receivedMessageCount += int(m.groupdict()['receivedMessageCount']) 
+                        total_receivedMessageSize += int(m.groupdict()['receivedMessageSize']) 
+                    else:
+                        print 'Not match !!!'
+                    date_str = file.split('.')[2]
+                    output = """==========  ==========================   ==========================  ===============
+Date        total_receivedMessageCount   receivedMessageSize         total_time_span
+==========  ==========================   ==========================  ===============
+%s          %d                           %d                          %d"""
+                    print output % (date_str, total_receivedMessageCount, total_receivedMessageSize, total_time_span)       
+                    print 
+                else
+                    print "No keyword AccountProcessed in the logfile"
+#>>> time.mktime(time.strptime("2013-03-19 17:34:56.715", "%Y-%m-%d %H:%M:%S.%f"))
+#1363685696.0
