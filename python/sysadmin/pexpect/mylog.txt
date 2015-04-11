@@ -1,0 +1,10 @@
+root@192.168.18.100's password: abc123
+
+Last login: Sat Apr 11 21:47:41 2015 from 192.168.18.131
+[root@www ~]# tar -czf /tmp/pssh.tar.gz /tmp/diff.html
+tar -czf /tmp/pssh.tar.gz /tmp/diff.html
+tar: Removing leading `/' from member names
+[root@www ~]# exit
+root@192.168.18.100's password: abc123
+
+pssh.tar.gz                                     0%    0     0.0KB/s   --:-- ETApssh.tar.gz                                   100% 1013     1.0KB/s   00:00    
