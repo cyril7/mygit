@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link href="smarty2.css" rel="stylesheet" type="text/css" media="all" />
+<script type="text/javascript" src="../jquery-1.3.2.js"></script>
+<script type="text/javascript" src="smarty2.js"></script>
+<title>{$smarty.const.DB_TABLENAME}</title>
+</head>
+<body>
+<h1>表名：{$db_tablename}</h1>
+<table id="Table" border="1" align="center" cellpadding="10" cellspacing="2" bordercolor="#ffaaoo">
+<caption style="font-size:15px">当前记录数：<label id="tableRowCount">{$db_count}</label>  &nbsp;&nbsp;&nbsp; <input type="button" value="Add" onclick="addFun()" /> </caption>
+{foreach $db_coltitle as $col}
+    <th>{$col}</th>
+{/foreach}
+<th>操作</th>
+{foreach $db_rows as $dbrow}
+    <tr>
+    {foreach $dbrow as $k=>$val}
+        <td>{$val}</td>
+    {/foreach}
+	<td>
+		<input type="button" value="Edit" onclick="editFun('{$dbrow['id']}', '{$dbrow['name']}', '{$dbrow['age']}');" />
+        <input type="button" value="Delete" onclick="deleteFun('{$dbrow['id']}')" />
+	</td> 
+    </tr>
+{/foreach}
+</table>
+
+<div id="editdiv" style="display:none;color:red;" align="center">
+ <form>
+ id:<input type=text id="editdiv_id" readonly="true" />
+ name:<input type=text id="editdiv_name" />
+ age:<input type=text id="editdiv_age" />
+ <input type=button name="Updata" value="Updata" onclick="updataFun()" />
+</form>
+</div>
+<div id="adddiv" style="display:none;color:green;" align="center">
+ <form>
+ name:<input type=text id="adddiv_name" />
+ age:<input type=text id="adddiv_age" />
+ <input type=button name="Insert" value="Insert" onclick="insertFun()" / >
+</form>
+</div>
+</body>
+</html>

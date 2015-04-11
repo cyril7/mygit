@@ -1,0 +1,1 @@
+通过JQuery对表格的操作，结合了SMARTY
