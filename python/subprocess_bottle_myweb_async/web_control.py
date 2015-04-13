@@ -11,18 +11,18 @@ def index():
 def static(filepath):
     return static_file(filepath,root='./static')
 
-@route('/cgi-bin/EricLogin.cgi')
-def eric_login():
+@route('/cgi-bin/CyrilLogin.cgi')
+def cyril_login():
     device = request.query.device
     print '\tlogin > ' + device
     with open(device, 'w') as f:
-        f.write('Eric\rHo\r')
+        f.write('Cyril\rHo\r')
     with open('./static/index.html', 'r') as f:
         response.content_type = 'text/html'
         return f.read() + '\nlogged in to ' + device
 
 @route('/cgi-bin/cmd.sh')
-def eric_command():
+def cyril_command():
     device = request.query.device
     command = request.query.command
     print '\t' + command + ' > ' + device
