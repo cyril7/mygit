@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}{{ object }}{% endblock %}
+
+{% block content %}
+    <h1>{{ object }}</h1>
+    <p>Syntax:{{ object.get_syntax_display }}<br>
+    Date: {{ object.timestamp|date:"Y-m-d H:i:s"}}</p>
+    <code><pre name="code" class="{{ object.get_syntax_display|lower }}">
+        {{ object.content }}
+    </pre></code>
+
+    <link type="text/css" rel="stylesheet" href="/static/css/shCore.css"></link>
+    <link type="text/css" rel="stylesheet" href="/static/css/shThemeDefault.css"></link>
+    <link type="text/css" rel="stylesheet" href="/static/css/shThemeMidnight.css"></link>
+    <!--<script language="javascript" src="/static/js/jquery-1.4.2.js"></script>-->
+    <script language="javascript" src="/static/js/shCore.js"></script>
+    <script language="javascript" src="/static/js/shLegacy.js"></script>
+    <script language="javascript" src="/static/js/shBrushPython.js"></script>
+    <script language="javascript" src="/static/js/shBrushXml.js"></script>
+    <script language="javascript" src="/static/js/shBrushJScript.js"></script>
+    <script language="javascript" src="/static/js/shBrushSql.js"></script>
+    <script language="javascript" src="/static/js/shBrushCss.js"></script>
+    <script language="javascript">
+        SyntaxHighlighter.all();
+        dp.SyntaxHighlighter.HighlightAll('code');
+    </script>
+{%endblock%}
