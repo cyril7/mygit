@@ -1,0 +1,68 @@
+{% extends "blog_base.html" %}
+
+{% comment %}{% block title %} {{ blog.caption }} {% endblock %} {% endcomment %}
+{% block title %}  blog list {% endblock %}
+
+{% block article %}
+
+<div class="content">
+{% for blog in blogs %}
+    <article class="content-main">
+    {% block article_title %}
+         <h2>{{ blog.caption }}</h2>
+    {% endblock %}
+    <p class="muted">
+        <i class="icon-user"></i><small>{{ blog.author }}</small>
+        <i class="icon-time"></i><small>{{ blog.publish_time }}</small>
+    </p>
+        <section>
+            <div class="blog-content">
+                {% block article_content %}
+                    {{ blog.content }}
+                {% endblock %}
+            </div>
+        </section>
+        <section>
+            <div class="row-fluid post-info">
+                <div class="span3">
+                    <p>
+                        <i class="icon-tag"></i>
+                        {% for tag in blog.tags.all %}
+                            <small class="muted"> {{ tag }} </small>
+                        {% endfor %}
+                    </p>
+                </div>
+                {% comment %}
+                <div class="span2 offset7">
+                    <a href="{% url delblog blog.id %}" title="delete"><i class="icon-trash"></i></a>
+                    <a href="{% url updateblog blog.id %}" title="edit"><i class="icon-edit"></i></a>
+                    <a href="#cmt" title="comment"><i class=" icon-comment"></i></a>
+                </div>
+                {% endcomment %}
+            </div>
+        </section>
+    </article>
+    <hr>
+{% endfor %}
+</div>
+{% endblock %}
+
+{% comment %}
+{% block content %}
+    <div class="content">
+        {% for blog in blogs %}
+            <h3><a href="{% url detailblog blog.id %}">{{ blog.caption }}</a></h3>
+            <h5>{{ blog.author }} | {{ blog.publish_time }} | {{ blog.tags }}</h5>
+            {% for tag in blog.tags.all %}
+            {{ tag.tag_name }}
+                {% if not forloop.last %} 
+                    |
+                {% endif %}
+            {% empty %}
+            <p>No tags!</p>
+            {% endfor %}
+            <div>{{ blog.content }}</div>
+        {% endfor %}
+    </div>
+{% endblock %}
+{% endcomment %}
