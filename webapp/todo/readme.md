@@ -7,13 +7,13 @@
 + Bootstrap v2.1.1
 
 ## GUI screenshots
-+ index 
+#### index 
 ![image](https://github.com/cyril7/mygit/raw/master/webapp/todo/screenshots_git/todo_index.jpg)
 
-+ add 
+#### add 
 ![image](https://github.com/cyril7/mygit/raw/master/webapp/todo/screenshots_git/todo_add.jpg)
 
-+ edit
+#### edit
 ![image](https://github.com/cyril7/mygit/raw/master/webapp/todo/screenshots_git/todo_crud.jpg)
 
 ## 问题反馈
