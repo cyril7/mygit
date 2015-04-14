@@ -1,0 +1,33 @@
+# -*- coding: utf-8 -*-
+# /etc/profile  on the monitored server to log commands' history
+# 通过配置LINUX profile的history 相关变量来实现与安全审计功能的对接.
+# 包括指定系统账号history存放路径,存储长度,扩展信息,PROMPT_COMMAND事件等.
+
+# add by OMAudit
+# 指定用户history日志存放路径
+export HISTFILE=$HOME/.bash_history
+
+# 指定history命令输出的记录数
+export HISTSIZE=1200
+
+# 指定历史记录文件.bash_history的最大存储行数
+export HISTFILESIZE=1200
+
+# 不记录连续重复的命令
+export HISTCONTROL=ignoredups
+
+# history 命令显示当前记录的用户与时间.例如"root 2014-06-06 23:32:10 free -m"
+export HISTTIMEFORMAT="`whoami` %F %T "
+
+# PROMPT_COMMAND 变量最为核心,实现了指定内容在出现bash提示符执行的功能
+# "history -a"将目前新增的history命令写入histfiles中;"history -c"删除记录的所有命令(仅内存)
+# "history -r"将histfiles的内容读到内存中,即可以通过history查看;
+# "$project/OMAudit/OMAudit_agent.py $(history 1)" 通过$(history 1)获取最后一条命令,且
+#     作为参数传递给OMAudit_agent.py脚本,做后续的命令数据信息上报
+export PROMPT_COMMAND="history -a; history -c; history -r;"'/tmp/OMAudit/OMAudit_agent.py $(history 1)'
+
+# 设置关键变量只读,提高安全性
+typeset -r PROMPT_COMMAND
+typeset -r HISTTIMEFORMAT
+
+
