@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+<title>php+jquery+ajax+json示例</title>
+<script src="../twitter-bootstrap-doc/docs/assets/js/jquery.js"></script>
+</head>
+<body>
+php+jquery+ajax+json示例
+<br />
+</body>
+<script type="text/javascript">
+//添加文档
+$(document).ready(
+  function(){
+    $("body").append('<input type="button" value="请求服务器" id="btn" />');
+    $('#btn').click(function (){ $("body").append('<div id="loading"><img src="loading.gif"/></div>');getServerData(); });
+    $("body").append('<div id="result"></div>');
+  }
+);
+ 
+//设置ajax的参数
+function getServerData(){
+  $.ajax({
+    url:"ajax_server.php",
+    data:"name=周&sex=男&age=11",
+    timeout:3000,
+    type:"POST",
+    async:false,
+    error:function (XMLHttpRequest, textStatus, errorThrown) {alert('请求错误...'+errorThrown);},
+    beforeSend:function (XMLHttpRequest) {
+     // alert('发送请求之前...');
+      $("#loading").show();
+    },
+    success: function (data, textStatus) {
+      //alert('请求成功...');
+    },
+    complete:handleResponse
+  });
+}
+ 
+//成功返回的绑定函数
+function handleResponse(XMLHttpRequest, textStatus) {
+  alert('完成啦...'+XMLHttpRequest);
+  var myjson = eval(XMLHttpRequest.responseText);
+  var str="";
+  for(var i=0;i<myjson.length;i++){
+    str+="姓名:"+myjson[i].name+"<br />";
+    str+="年龄:"+myjson[i].age+"<br />";
+    str+="性别:"+myjson[i].sex+"<br />";
+  }
+  $("#result").html(str);
+  $("#result").append('<input type="button" value="清除数据" id="btn2" />');
+  $('#btn2').click(function (){ $("#result").html(''); });
+}
+ 
+</script>
+</html>

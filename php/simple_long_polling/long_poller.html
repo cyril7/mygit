@@ -1,0 +1,70 @@
+<html>
+    <head>
+        <title>BargePoller</title>
+        <script src="../twitter-bootstrap-doc/docs/assets/js/jquery.js" type="text/javascript" charset="utf-8"></script>
+        <style type="text/css" media="screen">
+            body{ background:#000;color:#fff;font-size:.9em; }
+            .msg{ background:#aaa;padding:.2em; border-bottom:1px #000 solid}
+            .old{ background-color:#246499;}
+            .new{ background-color:#3B9957;}
+            .error{ background-color:#992E36;}
+        </style>
+        <script type="text/javascript" charset="utf-8">
+            function addmsg(type, msg){
+                /*  Simple helper to add a div.
+                    type is the name of a CSS class (old/new/error).
+                    msg is the contents of the div  */
+                $("#messages").append(
+                    "<div class='msg " + type + "'>" + msg + "</div>"
+                );
+            }
+            function waitformsg() {
+               /*   This requests the url "msgsrv.php"
+                    When it complete (or errors)    */
+                $.ajax({
+                    type:"GET",
+                    url:"msgsrv.php",
+                    /* If set to non-async, browser shows page as "Loading.."*/
+                    async:true,
+                    cache:false,
+                    /* Timeout in ms */
+                    timeout:50000,
+                    /* called when request to msgsrv.php completes */
+                    success:function(data){
+                        /* Add response to a .msg div (with the "new" class) */
+                        addmsg("new", data);
+                        setTimeout(
+                            /* Request next message */
+                            waitformsg,
+                            /* ..after 1 seconds */
+                            1000
+                        );
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        addmsg("error", textStatus + " (" + errorThrown + ")");
+                        setTimeout(
+                            /* Try again after.. */
+                            waitformsg,
+                            /* milliseconds (15seconds) */
+                            15000
+                        );
+                    }
+                });
+            }
+            $(document).ready(function(){
+                 /* Start the inital request */
+                waitformsg();
+            });
+        </script>
+    </head>
+
+    <body>
+        <div id="messages">
+            <div class="msg old">
+                BargePoll message requester!
+            </div>
+        </div>
+    </body>
+
+
+</html>
