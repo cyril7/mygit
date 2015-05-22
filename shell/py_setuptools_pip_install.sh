@@ -19,6 +19,7 @@ rpm -ivh http://dl.fedoraproject.org/pub/epel/5/x86_64/epel-release-5-4.noarch.r
 #rpm -ivh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
 # CentOS and Red Hat Enterprise Linux 7.x
 #rpm -ivh http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+sed -i 's/https:/http:/g' /etc/yum.repos.d/epel*  
 
 # install zlib
 yum install -y zlib zlib-devel
