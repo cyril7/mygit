@@ -19,3 +19,22 @@ WHITE=$(echo -en '\033[01;37m')
 
 # Test
 echo ${RED}RED${GREEN}GREEN${YELLOW}YELLOW${BLUE}BLUE${PURPLE}PURPLE${CYAN}CYAN${WHITE}WHITE${RESTORE} RESTORE
+
+
+function echo_red() { local __text=$1; echo ${RED}${__text}${RESTORE}; }
+function echo_yellow() { local __text=$1; echo ${YELLOS}${__text}${RESTORE}; }
+function echo_cyan() { local __text=$1; echo ${CYAN}${__text}${RESTORE}; }
+function echo_green() { local __text=$1; echo ${GREEN}${__text}${RESTORE}; }
+function echo_blue() { local __text=$1; echo ${BLUE}${__text}${RESTORE}; }
+function echo_magenta() { local __text=$1; echo ${MAGENTA}${__text}${RESTORE}; }
+function echo_purple() { local __text=$1; echo ${PURPLE}${__text}${RESTORE}; }
+
+
+txt='aaa'
+echo_red $txt
+echo_yellow $txt
+echo_cyan $txt
+echo_green $txt
+echo_blue $txt
+echo_magenta $txt
+echo_purple $txt
