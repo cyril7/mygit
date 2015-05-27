@@ -18,8 +18,8 @@ alias genpasswd="strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 8 | tr -
 # 进入目录并列出文件，如 cdl ../conf.d/
 cls() { cd "$@" && pwd ; ls -alF; }
 #cls() { cd "$1"; ls;}
-mcd() { mkdir -p "$1"; cd "$1"; pwd}
-md5check() { md5sum "$1" | grep "$2";}
+mcd() { mkdir -p "$1"; cd "$1"; pwd; }
+md5check() { md5sum "$1" | grep "$2"; }
 
 # 备份文件
 backup() { cp "$1"{,.bak};}
