@@ -1,0 +1,109 @@
+发送失败后具有重试功能
+
+$cat sendEmail.py
+#!/usr/bin/python
+import smtplib
+import string 
+import sys
+import datetime
+import time
+
+HOST = "mail1.bing.net"
+TO = sys.argv[1]
+SUBJECT = sys.argv[2]
+text = sys.argv[3]
+FROM = "abcr@bing.net"
+BODY = string.join((
+        "From: %s" % FROM,
+        "TO: %s" % TO,
+        "Subject: %s" % SUBJECT,
+        "",
+        text 
+        ), "\r\n")
+
+MAILPASS = "xxx"
+MAILUSER = "abcr@bing.net"
+MAILPORT = "25"
+LOGFILE = "/apps/sh/zabbix_scripts/sendEmail.log"
+
+def send_mail(arg_host, arg_mailport, arg_mailuser, arg_mailpass, arg_from, arg_to, arg_body):
+    try:
+        server = smtplib.SMTP()
+        server.connect(arg_host, arg_mailport)
+        server.starttls()
+        server.login(arg_mailuser, arg_mailpass)
+        server.sendmail(arg_from, [arg_to], arg_body)
+        server.quit()
+        #print "success_to_send_email"
+        strtxt = time.strftime("%c") + " success_to_send_email.\n"
+        with open(LOGFILE, 'a') as f:
+            f.write(strtxt)
+        return True
+
+    except Exception,e:
+        #print "fail_:"+str(e)
+        strtxt = time.strftime("%c") + " fail_:" + str(e) + "\n"
+        with open(LOGFILE, 'a') as f:
+            f.write(strtxt)
+        return False
+
+if __name__ == "__main__":
+    strbegin = time.strftime("%c") + " ====  BEGIN ====\n"
+    with open(LOGFILE, 'a') as f:
+        f.write(strbegin)
+
+    count = 0
+    while (count < 5):
+        now = time.strftime("%c")
+        ret = send_mail(HOST, MAILPORT, MAILUSER, MAILPASS, FROM, TO, BODY)
+        if ret :
+            #print now + " is " + str(count)
+                break
+        #print now + " fail_" + str(count)
+        time.sleep(5)
+        count = count + 1
+
+    strend = time.strftime("%c") + " ==== END ====\n\n"
+    with open(LOGFILE, 'a') as f:
+                f.write(strend)
+
+调试脚本
+
+$cat sendEmail.sh
+#!/bin/bash 
+
+#TO = sys.argv[1]
+#SUBJECT = sys.argv[2]
+#text = sys.argv[3]
+/usr/bin/python /apps/sh/zabbix_scripts/sendEmail.py $1 $2 $3  > /apps/sh/zabbix_scripts/sendEmail.tmp 2 >& 1
+
+注意事项
+
+zabbix执行action的时候环境变量pwd是缺失的，所以脚本中含有的路径必须使用绝对路径。
+
+
+使用HTTP接口发送通知
+
+#!/usr/bin/python
+import sys
+import string
+from datetime import datetime
+import urllib
+import urllib2
+#TO = sys.argv[1]
+SUBJECT = sys.argv[2]
+text = sys.argv[3]
+#format_text = string.join((text),"\r\n")
+url = 'http://172.28.0.56:9000/supp/httpClient'
+values = {'zt': SUBJECT, 'yjnr': text, 'APP_URL': 'http://10.42.0.176/mail/mailApp/sendMailNotice'}
+data = urllib.urlencode(values)
+#print data
+req = urllib2.Request(url, data)
+response = urllib2.urlopen(req)
+the_page = response.read()
+#print the_page
+now = datetime.now()
+logtext = now.strftime('%Y-%m-%d %H:%M:%S') + ' ' + the_page + '\n'
+fh = open('/apps/sh/zabbix_scripts/msg.log','a')
+fh.write(logtext)
+fh.close()
