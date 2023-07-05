@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# https://webutility.io/csv-to-chart-online
+# https://csv2chart.com/
 # This creates a CSV file that can be uploaded to Google Docs where you can insert a chart to graph the values
 
 LOG_FILE='/root/ytmon_tools/url_monitor.log'
