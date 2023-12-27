@@ -48,12 +48,12 @@ case "$1" in
         fi
     ;;
     procs)
-        include="zabbix_agentd|sshd|"    
+        include="zabbix_agentd|sshd|ec2conf"    
         if [ "$include"x != ""x ];then
             for id in `echo $include |tr '|' ' '`;do
                 proc=`echo $id | cut -f2 -d':'`
                 #str="$str\n\t\t{\"{#PROC_COUNT}\":\"$proc\", \"{#PORT}\":\"$port\"},"
-                str="$str\n\t\t{\"{#PROC_COUNT}\":\"$proc\","
+                str="$str\n\t\t{\"{#PROC_COUNT}\":\"$proc\"},"
                 confstr="$confstr|$proc"
             done
         else
